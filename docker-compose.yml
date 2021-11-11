@@ -1,0 +1,8 @@
+version: '3'
+services:
+  shop:
+    container_name: 'storeo-shop'
+    hostname: 'storeo-shop'
+    image: 'minhdtb/storeo-shop:latest'
+    build:
+      context: storeo-shop

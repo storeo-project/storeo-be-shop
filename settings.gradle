@@ -1,0 +1,14 @@
+pluginManagement {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+    plugins {
+        id "${quarkusId}" version "${quarkusVersion}"
+    }
+}
+rootProject.name = "storeo-be-shop"
+include "storeo-shop"
+include "storeo-shop-domain"
+

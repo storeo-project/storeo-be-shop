@@ -1,0 +1,44 @@
+plugins {
+    id 'java'
+}
+
+subprojects { project ->
+    println "Building project: ${project.name}-${projectVersion}"
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven {
+            url = 'https://storeo-repositories.s3.ap-southeast-1.amazonaws.com/release'
+        }
+    }
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    compileJava {
+        options.encoding = 'UTF-8'
+        options.compilerArgs << '-parameters'
+    }
+
+    compileTestJava {
+        options.encoding = 'UTF-8'
+    }
+
+    apply plugin: "java"
+
+    group 'com.daudo.storeo'
+    version "${projectVersion}"
+
+    dependencies {
+        compile platform("com.daudo.storeo:storeo-lib-bom:${libVersion}")
+        annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+        compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    }
+}
+
+jar {
+    enabled = false
+}
