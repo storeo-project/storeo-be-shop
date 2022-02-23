@@ -44,7 +44,7 @@ public class ShopController implements ShopResource {
     }
 
     @Override
-    public Uni<SuccessResponse<Shop>> getShop1000(String id) {
+    public Uni<SuccessResponse<Shop>> getShop(String id) {
         return getShopUseCase.getShop(id).map(SuccessResponse::from);
     }
 
