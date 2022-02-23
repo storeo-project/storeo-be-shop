@@ -1,6 +1,5 @@
 package com.daudo.storeo.shop.adapter.persistence.entities;
 
-import com.daudo.storeo.shop.image.adapter.persistence.entities.ImageEntity;
 import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -1,7 +1,46 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.amazonaws:aws-java-sdk-core:1.11.723'
+    }
+}
+
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+import com.amazonaws.auth.BasicAWSCredentials
+import org.gradle.api.publish.maven.MavenPublication
+
+ext {
+    awsCredentials = new BasicAWSCredentials("AKIA2TKENK7YLHOYGG6V", "qbuxUBVdTksPFDcZ+vJo/RuxHAkIyD2zoDzN182e")
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url "s3://storeo-repositories/release"
+            credentials(AwsCredentials) {
+                accessKey awsCredentials.AWSAccessKeyId
+                secretKey awsCredentials.AWSSecretKey
+            }
+        }
+    }
+}
+
 dependencies {
     implementation enforcedPlatform("${quarkusId}:${quarkusPlatformArtifactId}:${quarkusVersion}")
     implementation "io.quarkus:quarkus-core"
     implementation "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"
+    compile "com.daudo.storeo:storeo-common-domain:1.0"
     compile "com.daudo.storeo:storeo-lib-domain"
     compile "com.daudo.storeo:storeo-lib-web"
 }

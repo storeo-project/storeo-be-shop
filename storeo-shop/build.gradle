@@ -7,9 +7,6 @@ dependencies {
     implementation enforcedPlatform("${quarkusId}:${quarkusPlatformArtifactId}:${quarkusVersion}")
     annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
     implementation "org.mapstruct:mapstruct:${mapstructVersion}"
-    implementation "commons-codec:commons-codec:1.15"
-    implementation "io.quarkus:quarkus-amazon-s3"
-    implementation "software.amazon.awssdk:url-connection-client"
     implementation "com.daudo.storeo:storeo-lib-publisher"
     implementation "com.daudo.storeo:storeo-lib-orm"
     implementation "com.daudo.storeo:storeo-lib-web"

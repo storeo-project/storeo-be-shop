@@ -1,6 +1,6 @@
 package com.daudo.storeo.shop.domain.shop.domains;
 
-import com.daudo.storeo.shop.domain.image.domains.Image;
+import com.daudo.storeo.common.image.domains.Image;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
