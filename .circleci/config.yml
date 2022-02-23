@@ -1,0 +1,102 @@
+version: 2
+
+workflows:
+  version: 2
+  all:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only:
+                - develop
+      - deploy:
+          filters:
+            branches:
+              only:
+                - develop
+          requires:
+            - build
+
+jobs:
+  build:
+    docker:
+      - image: cimg/openjdk:11.0
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - restore_cache:
+          keys:
+            - gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+      - restore_cache:
+          keys:
+            - gradle-cache-{{ checksum "build.gradle" }}
+            - gradle-cache
+      - restore_cache:
+          keys:
+            - gradle-build-caches-{{ .Revision }}
+            - gradle-build-caches
+      - run:
+          name: Restoring Gradle Build Caches
+          command: |
+            [ -d ~/gradle-build-caches ] &&
+              [ -n "$(ls -A ~/gradle-build-caches)" ] &&
+              rm -rf ~/.gradle/caches/build-cache-* &&
+              mv ~/gradle-build-caches/* ~/.gradle/caches/ || true
+      - run:
+          name: Build Source
+          command: ./gradlew storeo-shop:clean storeo-shop:assemble -Dquarkus.native.container-build=true
+      - run:
+          name: Build And Publish Domain
+          command: ./gradlew storeo-shop-domain:clean storeo-shop-domain:publish
+      - save_cache:
+          paths:
+            - ~/.gradle/wrapper/
+          key: gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+      - save_cache:
+          paths:
+            - ~/.gradle/caches/
+          key: gradle-cache-{{ checksum "build.gradle" }}
+      - save_cache:
+          paths:
+            - ~/gradle-build-caches
+          key: gradle-build-caches-{{ .Revision }}
+          when: always
+      - run:
+          name: Login Docker
+          command: echo $DOCKER_PASSWORD | docker login --password-stdin -u $DOCKER_USER
+      - run:
+          name: Publish Docker
+          command: |
+            docker build -t $DOCKER_USER/storeo-shop:$CIRCLE_SHA1 ./storeo-shop
+            docker tag $DOCKER_USER/storeo-shop:$CIRCLE_SHA1 $DOCKER_USER/storeo-shop:latest
+            docker push $DOCKER_USER/storeo-shop --all-tags
+
+  deploy:
+    docker:
+      - image: cimg/base:2022.02
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "91:73:30:dc:db:6b:50:2d:35:53:01:4b:d1:54:82:b7"
+      - run: ssh-keyscan github.com >> ~/.ssh/known_hosts
+      - run:
+          name: Install kustomize
+          command: |
+            curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash            
+            sudo mv kustomize /usr/local/bin/
+            kustomize version
+      - run:
+          name: Update shop deploy
+          command: |
+            git clone git@github.com:storeo-project/storeo-be-shop-deploy.git
+            cd storeo-be-shop-deploy
+            kustomize edit set image $DOCKER_USER/storeo-shop:$CIRCLE_SHA1
+            git config --global user.email "minhdtb.83@gmail.com"
+            git config --global user.name $DOCKER_USER
+            git pull  
+            git add kustomization.yaml
+            git commit -m 'update kustomize $(date +%s)'
+            git push
+
+
