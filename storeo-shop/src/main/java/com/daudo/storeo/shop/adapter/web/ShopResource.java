@@ -30,7 +30,7 @@ public interface ShopResource {
 
     @GET
     @Path("{id}")
-    Uni<SuccessResponse<Shop>> getShop(@PathParam("id") String id);
+    Uni<SuccessResponse<Shop>> getShop1000(@PathParam("id") String id);
 
     @GET
     @Path("list")
