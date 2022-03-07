@@ -8,6 +8,7 @@ dependencies {
     annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
     implementation "org.mapstruct:mapstruct:${mapstructVersion}"
     implementation "com.daudo.storeo:storeo-lib-publisher"
+    implementation "com.daudo.storeo:storeo-lib-consumer"
     implementation "com.daudo.storeo:storeo-lib-orm"
     implementation "com.daudo.storeo:storeo-lib-web"
     implementation project(':storeo-shop-domain')

@@ -1,12 +1,16 @@
 package com.daudo.storeo.shop.application.services;
 
+import com.daudo.storeo.lib.publisher.PublishEvent;
 import com.daudo.storeo.lib.web.response.ListData;
+import com.daudo.storeo.shop.application.ports.*;
+import com.daudo.storeo.shop.application.usecases.*;
 import com.daudo.storeo.shop.domain.shop.domains.Shop;
 import com.daudo.storeo.shop.domain.shop.domains.ShopDetail;
 import com.daudo.storeo.shop.domain.shop.domains.ShopExistsException;
 import com.daudo.storeo.shop.domain.shop.domains.ShopNotFoundException;
-import com.daudo.storeo.shop.application.ports.*;
-import com.daudo.storeo.shop.application.usecases.*;
+import com.daudo.storeo.shop.domain.shop.events.ShopCreatedEvent;
+import com.daudo.storeo.shop.domain.shop.events.ShopDeletedEvent;
+import com.daudo.storeo.shop.domain.shop.events.ShopDetailUpdatedEvent;
 import io.smallrye.mutiny.Uni;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -34,6 +38,7 @@ public class ShopService implements CreateShopUseCase, DeleteShopUseCase,
     @Inject
     GetShopByNamePort getShopByNamePort;
 
+    @PublishEvent(ShopCreatedEvent.class)
     @Override
     public Uni<Shop> createShop(Shop shop) {
         return getShopByNamePort.getShopByName(shop.getName())
@@ -41,6 +46,7 @@ public class ShopService implements CreateShopUseCase, DeleteShopUseCase,
             .onItem().ifNull().switchTo(createShopPort.createShop(shop));
     }
 
+    @PublishEvent(ShopDeletedEvent.class)
     @Override
     public Uni<String> deleteShop(String id) {
         return getShopPort.getShop(id)
@@ -48,6 +54,7 @@ public class ShopService implements CreateShopUseCase, DeleteShopUseCase,
             .onItem().ifNull().failWith(new ShopNotFoundException(id));
     }
 
+    @PublishEvent(ShopDetailUpdatedEvent.class)
     @Override
     public Uni<Shop> updateShopDetail(String id, ShopDetail detail) {
         return getShopByNamePort.getShopByName(detail.getName())

@@ -28,14 +28,12 @@ public class ShopRepository implements CreateShopPort, DeleteShopPort, GetShopBy
     @Inject
     JpaShopRepository jpaShopRepository;
 
-    @PublishEvent(ShopCreatedEvent.class)
     @Override
     public Uni<Shop> createShop(Shop shop) {
         return jpaShopRepository.create(shopMapper.toEntity(shop))
             .map(shopMapper::toDomain);
     }
 
-    @PublishEvent(ShopDeletedEvent.class)
     @Override
     public Uni<String> deleteShop(String id) {
         return jpaShopRepository.deleteById(id);
@@ -68,7 +66,6 @@ public class ShopRepository implements CreateShopPort, DeleteShopPort, GetShopBy
         return jpaShopRepository.findById(id).map(shopMapper::toDomain);
     }
 
-    @PublishEvent(ShopDetailUpdatedEvent.class)
     @Override
     public Uni<Shop> updateShopDetail(String id, ShopDetail detail) {
         return jpaShopRepository.updateDetail(id, detail.getName(), detail.getDescription())

@@ -21,4 +21,5 @@ public class ShopCreatedEvent implements DomainEvent {
     public String getId() {
         return shop.getId();
     }
+
 }

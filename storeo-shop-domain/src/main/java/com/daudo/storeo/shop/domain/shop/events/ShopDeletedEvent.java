@@ -18,4 +18,5 @@ public class ShopDeletedEvent implements DomainEvent {
     public String getId() {
         return id;
     }
+
 }
