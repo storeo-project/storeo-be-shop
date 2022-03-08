@@ -40,7 +40,7 @@ dependencies {
     implementation enforcedPlatform("${quarkusId}:${quarkusPlatformArtifactId}:${quarkusVersion}")
     implementation "io.quarkus:quarkus-core"
     implementation "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"
-    compile "com.daudo.storeo:storeo-common-domain:1.0"
+    compile "com.daudo.storeo:storeo-common-domain:1.0.1"
     compile "com.daudo.storeo:storeo-lib-domain"
     compile "com.daudo.storeo:storeo-lib-web"
 }

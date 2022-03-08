@@ -10,7 +10,7 @@ import javax.enterprise.context.ApplicationScoped;
 class ImageRepository implements PanacheRepository<ImageEntity> {
 
     public Uni<String> deleteById(String id) {
-        return delete("where id = ?2", id).map(uid -> id);
+        return delete("id = ?1", id).map(uid -> id);
     }
 
 }
